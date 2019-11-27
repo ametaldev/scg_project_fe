@@ -1,6 +1,6 @@
 import Home from './components/Home.vue'
 import PlaceAPI from './components/PlaceAPI.vue'
-import PageNotFound from './components/PageNotFound.vue'
+import Profile from './components/Profile.vue'
 
 export default {
     mode: 'history',
@@ -19,10 +19,15 @@ export default {
             path: '/place',
             name: 'place',
             component: PlaceAPI
+        },        
+        {
+            path: '/profile',
+            name: 'profile',
+            component: Profile
         },
         {
             path: '*',
-            component: PageNotFound
+            component: Home
         }
     ]
 }

@@ -1,13 +1,15 @@
 <template>
   <b-container>
-    <h1>Find X,Y,Z Value</h1>
     <b-row>
-      <b-form-input v-model="text" placeholder="Enter your name"></b-form-input>
+      <h3 class="mx-auto my-3">Find value X, Y, Z from X, 5, 9, 15, 23, Y, Z.</h3>
     </b-row>
-    {{message}}
-      <b-button variant="outline-primary" @click="clickPlace">Button</b-button>
+    <b-row class="my-3">
+      <b-table striped hover :items="items"></b-table>
+    </b-row>
+    <b-row sm="6">
+       <b-button class="mx-auto" variant="outline-primary" @click=" clickCalculate">calculate</b-button>
+    </b-row>
   </b-container>
-
 </template>
 
 <script>
@@ -18,7 +20,12 @@ let api = `${'http://localhost:3000/'}${'scg/cal'}`
 export default {
     name: 'Home',
     data: () => ({
-       message:"Home Message.",
+       items:[ 
+          { Variable: 'X',  Value: 0 },
+          { Variable: 'Y',  Value: 0 },
+          { Variable: 'Z',  Value: 0 },
+       ],
+       inputText : '',
       
          drawerItems: [
             // TODO Could be directly set from the router with metas to filter
@@ -38,20 +45,17 @@ export default {
       
     },
     methods: {
-      clickPlace() {
-        console.log('api : ',api)
-        let param = { numData : [0,5,9,15,23,0,0]}
+      clickCalculate() {
+        let param = { numData : ['X',5,9,15,23,'Y','Z']}
           axios.post(`${api}`,param ).then(res => {
-          {
-            console.log("returnData : ", res);
-
-           
-
-            }
-
-           
+          
+          let list = res.data.list
+          this.items[0].Value = list[param.numData.indexOf('X')]
+          this.items[1].Value = list[param.numData.indexOf('Y')]
+          this.items[2].Value = list[param.numData.indexOf('Z')]
+  
         }).catch(error => {
-           // this.openDialog(this.const_dialog_error, 'Error', error, '');
+           console.log('error : ',error)
         });
       
       },

@@ -8,6 +8,12 @@
     <b-row>
       <b-table striped hover :items="items" :fields="fields"></b-table>
     </b-row>
+    <b-modal ref="my-modal" hide-footer title="Error Message">
+      <div class="d-block text-center">
+        <h3>{{errorMessage}}</h3>
+      </div>
+      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close</b-button>
+    </b-modal>
   </b-container>
 </template>
 
@@ -16,27 +22,26 @@ import axios from "axios";
 let api = `${'http://localhost:3000/'}${'scg/getMap'}`
 export default {
   name: 'PlaceAPI',
+  
   mounted() { 
        //init when enter to this page
        axios.post(`${api}`, '').then(res => {
-              console.log("returnData : ", res);
-              if(res.status === 200) {
-                // this.items = res.data.results
+              if(res.status === 200 && res.data.status === 'OK') {
                 res.data.results.find(item => {
                     this.items.push({Name:item.name, Address: item.formatted_address, Rating: item.rating})
                 })
               }else{
-                console.log('error')
+                this.errorMessage = res.data.error_message
+                this.showModal()
               }
           }).catch(error => {
-           // this.openDialog(this.const_dialog_error, 'Error', error, '');
+            console.log('error : ',error)
           });
    },
   data(){
     return {
-      email: 'email',
-      web: 'web',
       items: [],
+      errorMessage: '',
       fields: [
           {
             key: 'Name',
@@ -49,14 +54,18 @@ export default {
           {
             key: 'Rating',
             sortable: true,
-            // Variant applies to the whole column, including the header and footer
             variant: 'danger'
           }
         ]
     }
   },
 methods: {
-      
+       showModal() {
+        this.$refs['my-modal'].show()
+      },
+      hideModal() {
+        this.$refs['my-modal'].hide()
+      },
     }
 }
 </script>
